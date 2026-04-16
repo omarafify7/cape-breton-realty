@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Leaflet expects a specific stylesheet for tile rendering and controls. */
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-white text-dark-600 antialiased;
+}
+
+/* Make Leaflet attribution legible against our map background. */
+.leaflet-container {
+  font-family: inherit;
+}
