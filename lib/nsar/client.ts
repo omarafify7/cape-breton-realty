@@ -58,35 +58,15 @@ export async function fetchNsar<T>(
   return (await res.json()) as T;
 }
 
-const PAGE_SIZE = 200; // Bridge caps $top at 200 per request.
-
-/**
- * Fetch active NSAR listings province-wide (no brokerage filter).
- * Pages internally via $skip when `limit` exceeds Bridge's per-request cap
- * of 200. With the default 5-min cache, even a 2,000-listing pull hits
- * Bridge ~10 times every 5 minutes — well under the 5,000/hour limit.
- */
+/** Fetch active NSAR listings province-wide (no brokerage filter). */
 export async function fetchActiveProperties(
-  limit: number = 500
+  limit: number = 100
 ): Promise<NsarProperty[]> {
-  const target = Math.max(1, Math.floor(limit));
-  const out: NsarProperty[] = [];
-  let skip = 0;
-
-  while (out.length < target) {
-    const top = Math.min(PAGE_SIZE, target - out.length);
-    const page = await fetchNsar<NsarODataResponse<NsarProperty>>("Property", {
-      $filter: "StandardStatus eq 'Active'",
-      $expand: "ListOffice",
-      $top: top,
-      $skip: skip
-    });
-    const rows = Array.isArray(page.value) ? page.value : [];
-    if (rows.length === 0) break;
-    out.push(...rows);
-    if (rows.length < top) break; // last page
-    skip += rows.length;
-  }
-
-  return out.slice(0, target);
+  const top = Math.max(1, Math.min(200, Math.floor(limit)));
+  const data = await fetchNsar<NsarODataResponse<NsarProperty>>("Property", {
+    $filter: "StandardStatus eq 'Active'",
+    $expand: "ListOffice",
+    $top: top
+  });
+  return Array.isArray(data.value) ? data.value : [];
 }
