@@ -1,9 +1,15 @@
 import type { Property } from "./types";
 import { fetchActiveProperties, nsarToProperty } from "./nsar";
 
+function getMaxListings(): number {
+  const raw = process.env.NSAR_MAX_LISTINGS;
+  const n = raw ? Number.parseInt(raw, 10) : NaN;
+  return Number.isFinite(n) && n > 0 ? n : 500;
+}
+
 async function loadLiveProperties(): Promise<Property[]> {
   try {
-    const records = await fetchActiveProperties(100);
+    const records = await fetchActiveProperties(getMaxListings());
     return records.map(nsarToProperty);
   } catch (err) {
     console.warn(
