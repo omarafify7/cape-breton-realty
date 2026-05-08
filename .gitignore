@@ -4,3 +4,13 @@ out/
 .DS_Store
 *.log
 .env*.local
+
+# Local agent / tooling state
+.claude/
+logs/
+
+# Build artifacts
+tsconfig.tsbuildinfo
+
+# Windows alternate-data-stream sidecars
+*:Zone.Identifier
