@@ -18,12 +18,17 @@ const MapView = dynamic(() => import("@/components/MapView"), {
   )
 });
 
-export function generateStaticParams() {
-  return getAllProperties().map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  const properties = await getAllProperties();
+  return properties.map((p) => ({ slug: p.slug }));
 }
 
-export default function ListingPage({ params }: { params: { slug: string } }) {
-  const property = getPropertyBySlug(params.slug);
+export default async function ListingPage({
+  params
+}: {
+  params: { slug: string };
+}) {
+  const property = await getPropertyBySlug(params.slug);
   if (!property) notFound();
 
   return (

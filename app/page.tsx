@@ -2,8 +2,8 @@ import Link from "next/link";
 import { getAllProperties } from "@/lib/properties";
 import { PropertyCard } from "@/components/PropertyCard";
 
-export default function HomePage() {
-  const properties = getAllProperties();
+export default async function HomePage() {
+  const properties = await getAllProperties();
   const featured = properties.filter((p) => p.isOwnListing && p.status === "active").slice(0, 6);
 
   return (

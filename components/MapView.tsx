@@ -133,7 +133,10 @@ export default function MapView({
         );
       })}
 
-      {/* Centroid markers help users see properties at low zoom where parcels are tiny. */}
+      {/* Centroid markers help users see properties at low zoom where parcels
+          are tiny, and they're the only visible affordance for live listings
+          that don't yet have a GeoNova polygon. Each marker carries the same
+          tooltip + popup as the polygons above. */}
       {properties.map((p) => (
         <CircleMarker
           key={`pt-${p.pid}`}
@@ -148,7 +151,41 @@ export default function MapView({
           eventHandlers={{
             click: () => onSelect?.(p.slug)
           }}
-        />
+        >
+          <Tooltip direction="top" offset={[0, -4]} opacity={0.95}>
+            <div className="text-xs">
+              <div className="font-semibold">{p.address}</div>
+              <div className="text-gray-600">
+                {p.community} · PID {p.pid}
+              </div>
+              <div className="font-semibold mt-0.5">
+                {formatCad(p.priceCad)}
+              </div>
+            </div>
+          </Tooltip>
+          {showPopups && (
+            <Popup>
+              <div className="text-sm w-56">
+                <div className="font-serif text-base text-ocean-900">
+                  {p.address}
+                </div>
+                <div className="text-xs text-gray-600 mb-2">
+                  {p.community}, NS · PID {p.pid}
+                </div>
+                <div className="font-semibold">{formatCad(p.priceCad)}</div>
+                <div className="mt-2 text-xs text-gray-700 line-clamp-3">
+                  {p.shortDescription}
+                </div>
+                <Link
+                  href={`/listings/${p.slug}`}
+                  className="mt-3 inline-block text-xs font-semibold text-ocean-700 underline"
+                >
+                  Open listing →
+                </Link>
+              </div>
+            </Popup>
+          )}
+        </CircleMarker>
       ))}
     </MapContainer>
   );

@@ -3,8 +3,8 @@ import { PropertyCard } from "@/components/PropertyCard";
 
 export const metadata = { title: "All listings — Cape Breton Realty" };
 
-export default function ListingsIndexPage() {
-  const properties = getAllProperties();
+export default async function ListingsIndexPage() {
+  const properties = await getAllProperties();
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
